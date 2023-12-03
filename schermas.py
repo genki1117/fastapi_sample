@@ -45,3 +45,8 @@ class UserResponse(BaseModel):
 
     # この記述によりORMのmodelオブジェクトを適切なレスポンススキーマに変換する
     model_config = ConfigDict(from_attributes=True)
+
+# tokenのレスポンスを定義
+class token(BaseModel):
+    access_token: str
+    token_type: str
