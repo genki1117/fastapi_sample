@@ -16,4 +16,13 @@ class Item(Base):
     description = Column(String, nullable=True)
     status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.ON_SALE)
     created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
