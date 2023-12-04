@@ -2,11 +2,16 @@ from datetime import datetime, timedelta
 import hashlib
 import base64
 import os
-from jose import jwt
+from typing import Annotated
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer # リクエストのauthorizationヘッダーからBearerを取得する
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
-from schermas import UserCreate
+from schermas import UserCreate, DecodedToken
 from models import User
 
+# tokenを取得するエンドポイントを引数にし、インスタンス化する
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
 
 def create_user(db: Session, user_create: UserCreate):
     salt = base64.b64encode(os.urandom(32))
@@ -60,3 +65,19 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     # jwtを生成
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+# tokenからuser情報を取得する関数を定義
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    try:
+        # ヘッダーから取得したtokenとSECRET_KEYと、アルゴリズムを引数に渡してjwtのpayload部分を取得する
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get('sub')
+        user_id = payload.get('id')
+        
+        # 取得したusernameとuser_idが不正なら
+        if username is None or user_id is None:
+            return None
+        
+        # schemesからDecodedTokenを取得し、オブジェクトにしてreturn
+        return DecodedToken(username=username, user_id=user_id)
+    except JWTError:
+        raise JWTError

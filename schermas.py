@@ -50,3 +50,8 @@ class UserResponse(BaseModel):
 class token(BaseModel):
     access_token: str
     token_type: str
+
+# decodeしたtokenのレスポンス
+class DecodedToken(BaseModel):
+    username: str
+    user_id: int
