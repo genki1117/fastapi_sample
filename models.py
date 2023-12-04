@@ -4,7 +4,8 @@
 
 from datetime import datetime
 from database import Base
-from sqlalchemy import Column, Integer, String, Enum, DateTime
+from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from schermas import ItemStatus
 
 
@@ -17,6 +18,11 @@ class Item(Base):
     status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.ON_SALE)
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    # ForeignKeyの引数にはテーブル名.idを指定する
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+
+    # pythonのmodel間で関連付け 多なのでitems
+    users = relationship('User', back_populates='items')
 
 
 class User(Base):
@@ -27,3 +33,6 @@ class User(Base):
     salt = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    
+    # pythonのmodel間で関連付け 1なので単数系
+    items = relationship('Item', back_populates='user')
