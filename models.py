@@ -22,7 +22,7 @@ class Item(Base):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
     # pythonのmodel間で関連付け 多なのでitems
-    users = relationship('User', back_populates='items')
+    user = relationship('User', back_populates='items')
 
 
 class User(Base):

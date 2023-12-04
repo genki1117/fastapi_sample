@@ -16,9 +16,10 @@ def get_by_name(db: Session, item_name: str):
     return db.query(Item).filter(Item.name.like(f'%{item_name}%')).all()
 
 # 新規作成
-def crete(db: Session, post_item: ItemCreate):
+def crete(db: Session, post_item: ItemCreate, user_id: int):
     new_item = Item(
-        **post_item.model_dump()
+        **post_item.model_dump(),
+        user_id=user_id
     )
     print(new_item)
     db.add(new_item)

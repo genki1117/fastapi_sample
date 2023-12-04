@@ -66,6 +66,7 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 # tokenからuser情報を取得する関数を定義
+# Annotated[str, Depends(oauth2_scheme)でtoken変数にtokenを代入
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         # ヘッダーから取得したtokenとSECRET_KEYと、アルゴリズムを引数に渡してjwtのpayload部分を取得する
