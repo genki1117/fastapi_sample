@@ -21,9 +21,10 @@ async def get_all(db: DbDependency):
     return item_cruds.get_all(db)
 
 # id取得
+#  認証
 @router.get('/{item_id}', response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def get_by_id(db: DbDependency, item_id: int = Path(gt=0)):
-    find_by_id = item_cruds.get_by_id(db, item_id)
+async def get_by_id(db: DbDependency, user: UserDependency, item_id: int = Path(gt=0)):
+    find_by_id = item_cruds.get_by_id(db, item_id, user.user_id)
     if not find_by_id:
         raise HTTPException(status_code=404, detail='item not found')
     return find_by_id
@@ -44,16 +45,16 @@ async def create(db: DbDependency, user: UserDependency, post_item: ItemCreate):
 
 # 更新
 @router.put('/update/{item_id}', response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def update(db: DbDependency, post_item: ItemUpdate, item_id: int = Path(gt=0)):
-    updated_item = item_cruds.update(db, item_id, post_item)
+async def update(db: DbDependency,user: UserDependency,  post_item: ItemUpdate, item_id: int = Path(gt=0)):
+    updated_item = item_cruds.update(db, item_id, post_item, user.user_id)
     if not updated_item:
         raise HTTPException(status_code=404, detail='item not updated')
     return updated_item
 
 # 削除
 @router.delete('/delete/{item_id}', response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def delete(db: DbDependency, item_id:int = Path(gt=0)):
-    deleted_item = item_cruds.delete(db, item_id)
+async def delete(db: DbDependency, user: UserDependency,item_id:int = Path(gt=0)):
+    deleted_item = item_cruds.delete(db, item_id, user.user_id)
     if not deleted_item:
         raise HTTPException(status_code=404, detail='item not deleted')
     return deleted_item

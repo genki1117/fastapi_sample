@@ -8,8 +8,8 @@ def get_all(db: Session):
     return db.query(Item).all()
 
 # id取得
-def get_by_id(db: Session, item_id: int):
-    return db.query(Item).filter(Item.id == item_id).first()
+def get_by_id(db: Session, item_id: int, user_id):
+    return db.query(Item).filter(Item.id == item_id).filter(Item.user_id == user_id).first()
 
 # name取得
 def get_by_name(db: Session, item_name: str):
@@ -27,8 +27,8 @@ def crete(db: Session, post_item: ItemCreate, user_id: int):
     return new_item
 
 # 更新
-def update(db: Session, item_id: int, post_item: ItemUpdate):
-    item = get_by_id(db, item_id)
+def update(db: Session, item_id: int, post_item: ItemUpdate, user_id: int):
+    item = get_by_id(db, item_id, user_id)
     if item is None:
         return None
     
@@ -41,8 +41,8 @@ def update(db: Session, item_id: int, post_item: ItemUpdate):
     db.commit()
     return item
 
-def delete(db, item_id):
-    item = get_by_id(db, item_id)
+def delete(db: Session, item_id: int, user_id: int):
+    item = get_by_id(db, item_id, user_id)
     if item is None:
         return None
     
