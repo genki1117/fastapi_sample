@@ -9,6 +9,7 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from schermas import UserCreate, DecodedToken
 from models import User
+from config import get_settings
 
 # tokenを取得するエンドポイントを引数にし、インスタンス化する
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
@@ -49,7 +50,7 @@ pip install "python-jose[cryptography]"
 ターミナルで openssl rand -hex 32 を入力し秘密鍵を生成
 """
 ALGORITHM = 'HS256'
-SECRET_KEY = '0531bbdd66d7ac2737f3759ef7f5974c3e0212030492d69a0bc7a45a920679af'
+SECRET_KEY = get_settings().secret_key
 
 
 # tokenの作成
